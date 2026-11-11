@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+serviceAccountKey.json
+*service-account*.json
+node_modules/
+.firebase/
+.DS_Store

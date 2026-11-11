@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4a160f">
+<title>Guest Register – The Chennai Residency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#6a2017; --bg-2:#3b110b;
+    --gold:#f2bb4e; --gold-soft:#f6d489; --salmon:#f08c54;
+    --cream:#fbeed6; --muted:#dcb7a2; --line:rgba(242,187,78,.38);
+    --err:#ffc4b3; --ok:#a9e3b8;
+    --serif:"Playfair Display",Georgia,serif; --sans:"Jost",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%;color-scheme:dark}
+  body{margin:0;min-height:100vh;min-height:100dvh;color:var(--cream);font:400 16px/1.5 var(--sans);
+       background:radial-gradient(120% 90% at 50% 0%,var(--bg-1) 0%,var(--bg-2) 70%) fixed,var(--bg-2)}
+  .wrap{max-width:440px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
+        padding:max(28px,env(safe-area-inset-top)) 24px max(28px,env(safe-area-inset-bottom))}
+  [hidden]{display:none!important}
+
+  /* ---------- brand ---------- */
+  .brand{display:flex;flex-direction:column;align-items:center;text-align:center;margin:8px 0 28px}
+  .mark{width:78px;height:auto;display:block;margin-bottom:14px}
+  .the{font:italic 600 1.5rem/1 var(--serif);color:var(--gold-soft)}
+  .stars{display:flex;align-items:center;gap:12px;width:100%;margin:6px 0 4px}
+  .stars i{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line))}
+  .stars i:last-child{background:linear-gradient(270deg,transparent,var(--line))}
+  .stars span{color:var(--gold);font-size:.62rem;letter-spacing:.3em;padding-left:.3em}
+  .name{font:italic 700 2.15rem/1.1 var(--serif);color:var(--gold);
+        background:linear-gradient(180deg,#f9dc92,#e8a73c);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .tag{margin:14px 0 0;color:var(--muted);font-size:.78rem;letter-spacing:.22em;text-transform:uppercase}
+  .roompill{margin-top:14px;border:1px solid var(--line);border-radius:99px;padding:4px 16px;color:var(--gold-soft);font-size:.85rem;letter-spacing:.08em}
+  .compact .brand{flex-direction:row;justify-content:flex-start;gap:12px;margin:0 0 22px;text-align:left}
+  .compact .mark{width:30px;margin:0}
+  .compact .the,.compact .stars,.compact .tag,.compact .roompill{display:none}
+  .compact .name{font-size:1.3rem}
+
+  /* ---------- steps ---------- */
+  .step{flex:1;display:flex;flex-direction:column}
+  .step:not([hidden]){animation:rise .35s ease-out both}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .pane:not([hidden]){animation:slide .3s ease-out both}
+  @keyframes slide{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+
+  .choices{display:grid;gap:14px;margin-top:6px}
+  .choice{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;
+          padding:20px 22px;border:1px solid var(--gold);border-radius:14px;background:rgba(242,187,78,.04);color:var(--cream);
+          font:inherit;cursor:pointer;transition:background .2s,color .2s,transform .15s}
+  .choice b{display:block;font:italic 700 1.5rem/1.15 var(--serif);color:var(--gold);transition:color .2s}
+  .choice small{display:block;margin-top:2px;color:var(--muted);font-size:.84rem;transition:color .2s}
+  .choice svg{flex:0 0 22px;stroke:var(--gold);transition:transform .2s,stroke .2s}
+  .choice:hover,.choice:focus-visible{background:var(--gold);color:var(--bg-2)}
+  .choice:hover b,.choice:focus-visible b,.choice:hover small,.choice:focus-visible small{color:var(--bg-2)}
+  .choice:hover svg,.choice:focus-visible svg{stroke:var(--bg-2);transform:translateX(4px)}
+  .choice:active{transform:scale(.985)}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .topbar .who{font:italic 600 1.1rem var(--serif);color:var(--gold-soft)}
+  .progress{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px}
+  .progress i{height:3px;border-radius:2px;background:rgba(242,187,78,.2);position:relative;overflow:hidden}
+  .progress i::after{content:"";position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+  .progress i.on::after{transform:scaleX(1)}
+  .steptitle{color:var(--muted);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;margin:0 0 4px}
+
+  label{display:block;margin:20px 0 2px;color:var(--gold-soft);font-size:.72rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase}
+  .hint{color:var(--muted);text-transform:none;letter-spacing:0;font-size:.78rem}
+  input,select,textarea{width:100%;font:inherit;font-size:1.02rem;color:var(--cream);background:transparent;border:0;border-bottom:1px solid var(--line);
+    border-radius:0;padding:10px 2px;min-height:46px;transition:border-color .2s,box-shadow .2s}
+  input::placeholder,textarea::placeholder{color:rgba(220,183,162,.45)}
+  textarea{resize:none;min-height:70px}
+  select{appearance:none;-webkit-appearance:none;cursor:pointer;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23f2bb4e' stroke-width='1.6'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 4px center}
+  option,optgroup{background:#4a160f;color:var(--cream)}
+  input:focus,select:focus,textarea:focus{outline:0;border-bottom-color:var(--gold);box-shadow:0 1px 0 var(--gold)}
+  .row{display:flex;gap:18px}.row>*{flex:1;min-width:0}
+  .phone{display:flex;gap:14px}.phone select{flex:0 0 78px}.phone input{flex:1}
+  .note{margin:8px 0 0;color:var(--muted);font-size:.8rem}
+  .check{display:flex;gap:12px;align-items:flex-start;margin:26px 0 0;text-transform:none;letter-spacing:0;font-size:.88rem;color:var(--cream);font-weight:400;cursor:pointer}
+  .check input{appearance:none;-webkit-appearance:none;flex:0 0 22px;width:22px;min-height:22px;height:22px;margin:1px 0 0;padding:0;
+    border:1px solid var(--gold);border-radius:6px;display:grid;place-content:center;cursor:pointer}
+  .check input::after{content:"";width:10px;height:6px;border:2px solid var(--bg-2);border-top:0;border-right:0;transform:rotate(-45deg) scale(0);transition:transform .15s;margin-top:-2px}
+  .check input:checked{background:var(--gold)}
+  .check input:checked::after{transform:rotate(-45deg) scale(1)}
+
+  /* ---------- ID photo buttons ---------- */
+  .shot{flex:1;min-width:0}
+  .shotbtn{width:100%;aspect-ratio:1.6;position:relative;overflow:hidden;border:1px dashed var(--gold);border-radius:12px;
+    background:rgba(242,187,78,.04);color:var(--gold-soft);font:inherit;font-size:.85rem;cursor:pointer;display:grid;place-items:center}
+  .shotbtn img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .shotbtn span{position:relative;z-index:1;padding:3px 10px;border-radius:99px;background:rgba(59,17,11,.75)}
+
+  .actions{margin-top:auto;padding-top:28px;display:flex;gap:12px}
+  .btn{font:inherit;font-weight:600;font-size:.95rem;letter-spacing:.06em;cursor:pointer;min-height:52px;border-radius:99px;padding:0 26px;
+       transition:transform .15s,background .2s,opacity .2s,box-shadow .2s}
+  .btn:active{transform:scale(.97)}
+  .btn.fill{flex:1;border:0;background:var(--gold);color:var(--bg-2)}
+  .btn.fill:hover{background:var(--gold-soft);box-shadow:0 6px 24px rgba(242,187,78,.25)}
+  .btn.fill:disabled{opacity:.55;cursor:wait}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--gold-soft)}
+  .btn.ghost:hover{border-color:var(--gold)}
+  .linkbtn{background:none;border:0;color:var(--gold-soft);font:inherit;font-size:.88rem;cursor:pointer;padding:8px 0;text-decoration:underline;text-underline-offset:3px}
+  .linkbtn:disabled{color:var(--muted);text-decoration:none;cursor:default}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .msg{min-height:1.4em;margin:14px 0 0;color:var(--err);font-size:.88rem}
+  .shake{animation:shake .4s}
+  @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+  /* ---------- OTP ---------- */
+  .otp{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:22px 0 4px}
+  .otp input{text-align:center;font:600 1.5rem var(--serif);padding:10px 0;min-height:58px;border:1px solid var(--line);border-radius:12px;background:rgba(242,187,78,.04)}
+  .otp input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,187,78,.2)}
+  .otp input.filled{border-color:var(--gold)}
+  h2{font:italic 700 1.7rem/1.2 var(--serif);color:var(--gold);margin:0 0 6px}
+
+  /* ---------- done ---------- */
+  .done{align-items:center;text-align:center;padding-top:10px}
+  .tick{width:84px;height:84px;margin:6px 0 14px}
+  .tick circle{fill:none;stroke:var(--gold);stroke-width:2;stroke-dasharray:252;stroke-dashoffset:252;animation:draw .7s ease-out .1s forwards}
+  .tick path{fill:none;stroke:var(--gold);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:50;stroke-dashoffset:50;animation:draw .4s ease-out .7s forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .ref{font:italic 700 2rem var(--serif);letter-spacing:.03em;color:var(--gold-soft);margin:8px 0 2px}
+  .slip{width:100%;margin:22px 0 0;padding:6px 18px;border:1px solid var(--line);border-radius:14px;text-align:left}
+  .slip div{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid rgba(242,187,78,.16)}
+  .slip div:last-child{border:0}
+  .slip span{color:var(--muted);font-size:.85rem}.slip strong{font-weight:500;text-align:right}
+  .banner{border:1px solid var(--gold);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:.85rem;color:var(--gold-soft)}
+  .foot{margin-top:26px;text-align:center;color:rgba(220,183,162,.6);font-size:.72rem;letter-spacing:.04em;line-height:1.6}
+
+  .timerbox{width:100%;margin:18px 0 0;padding:16px 18px;border:1px solid var(--gold);border-radius:14px;text-align:center;background:rgba(242,187,78,.05)}
+  .tlabel{color:var(--muted);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase}
+  .tclock{font:italic 700 2.6rem/1.2 var(--serif);color:var(--gold-soft);font-variant-numeric:tabular-nums}
+  .timerbox.over{border-color:var(--salmon);background:rgba(240,140,84,.12)}
+  .timerbox.over .tclock{color:var(--salmon)}
+
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+
+  <header class="brand">
+    <img class="mark" alt="" src="logo.png" onerror="this.hidden=true">
+    <div class="the">The</div>
+    <div class="stars"><i></i><span>★★★</span><i></i></div>
+    <div class="name">Chennai Residency</div>
+    <div class="tag">Guest &amp; Visitor Register</div>
+    <div id="roompill" class="roompill" hidden></div>
+  </header>
+
+  <div id="setupBanner" class="banner" hidden>Setup is not finished: add your Firebase and Apps Script details in the CONFIG block of this file.</div>
+
+  <!-- 1. Guest or visitor -->
+  <section id="stepType" class="step">
+    <div class="choices">
+      <button id="pickGuest" class="choice" type="button">
+        <span><b>Guest</b><small>It is our honour to host you. Welcome to The Chennai Residency</small></span>
+        <svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke-width="1.6" stroke-linecap="round"><path d="M1 7h19M14 1l6 6-6 6"/></svg>
+      </button>
+      <button id="pickVisitor" class="choice" type="button">
+        <span><b>Visitor</b><small>Welcome! Let us help you reach the person you are visiting</small></span>
+        <svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke-width="1.6" stroke-linecap="round"><path d="M1 7h19M14 1l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- 2. Details wizard -->
+  <section id="stepForm" class="step" hidden>
+    <div class="topbar"><span class="who" id="typeLabel"></span></div>
+    <div class="progress" id="progress"><i></i><i></i><i></i><i></i></div>
+    <p class="steptitle" id="stepTitle"></p>
+
+    <div class="pane" data-pane="1">
+      <label for="name">Full name</label>
+      <input id="name" autocomplete="name" maxlength="80" placeholder="As on your ID">
+      <div class="row">
+        <div><label for="gender">Gender</label>
+          <select id="gender"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+        <div><label for="age">Age</label><input id="age" type="number" inputmode="numeric" min="1" max="120"></div>
+      </div>
+      <label for="nationality">Nationality</label>
+      <select id="nationality"><option>Indian</option><option>Foreign national</option></select>
+      <div id="foreignBox" hidden>
+        <label for="passport">Passport number</label><input id="passport" maxlength="30">
+        <div class="row">
+          <div><label for="visa">Visa number</label><input id="visa" maxlength="30"></div>
+          <div><label for="visaExp">Visa expiry</label><input id="visaExp" type="date"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pane" data-pane="2" hidden>
+      <label for="address">Home address</label>
+      <textarea id="address" autocomplete="street-address" maxlength="300" placeholder="Door no, street, city, pincode"></textarea>
+      <label for="comingFrom">From <span class="hint">(city)</span></label>
+      <input id="comingFrom" maxlength="80">
+      <div class="row">
+        <div><label for="idType">ID proof</label>
+          <select id="idType"><option value="">Select</option><option>Aadhaar</option><option>Driving Licence</option>
+            <option>Voter ID</option><option>PAN</option><option>Passport</option></select></div>
+        <div><label for="idNo">ID number</label><input id="idNo" maxlength="30" autocomplete="off"></div>
+      </div>
+      <label>ID photos <span class="hint" id="photoHint">(front &amp; back)</span></label>
+      <div class="row" style="margin-top:8px">
+        <div class="shot"><input type="file" id="idFront" accept="image/*" capture="environment" hidden>
+          <button type="button" class="shotbtn" data-for="idFront"><img alt="" hidden><span>📷 Front side</span></button></div>
+        <div class="shot"><input type="file" id="idBack" accept="image/*" capture="environment" hidden>
+          <button type="button" class="shotbtn" data-for="idBack"><img alt="" hidden><span>📷 Back side</span></button></div>
+      </div>
+      <p class="note" id="photoNote">Please show the original ID at the reception desk.</p>
+    </div>
+
+    <div class="pane" data-pane="3" hidden>
+      <label for="purpose">Purpose of visit</label>
+      <select id="purpose"><option value="">Select</option><option>Business</option><option>Tourism</option><option>Medical</option>
+        <option>Pilgrimage</option><option>Personal / family</option><option>Other</option></select>
+      <div class="row">
+        <div><label for="persons">Total persons</label><input id="persons" type="number" inputmode="numeric" min="1" max="20" value="1"></div>
+        <div id="acCol"><label for="roomType">AC / Non-AC</label>
+          <select id="roomType"><option value="">Select</option><option>AC</option><option>Non-AC</option></select></div>
+      </div>
+      <div id="roomCol"><label for="room">Room number</label><select id="room"></select></div>
+      <div id="visitBox" hidden>
+        <label for="visiting">Whom are you meeting? <span class="hint">(room no. or name)</span></label>
+        <input id="visiting" maxlength="80">
+      </div>
+      <div id="outBox"><label for="checkout">Expected check-out date</label><input id="checkout" type="date"></div>
+      <label for="vehicle">Vehicle number <span class="hint">(optional)</span></label>
+      <input id="vehicle" maxlength="20" style="text-transform:uppercase">
+      <label for="email">Email <span class="hint">(optional)</span></label>
+      <input id="email" type="email" autocomplete="email" maxlength="80">
+    </div>
+
+    <div class="pane" data-pane="4" hidden>
+      <label for="phone">Mobile number <span class="hint">(we will send an OTP)</span></label>
+      <div class="phone">
+        <select id="cc" aria-label="Country code">
+          <option value="+91" selected>+91</option><option value="+1">+1</option><option value="+44">+44</option>
+          <option value="+61">+61</option><option value="+65">+65</option><option value="+94">+94</option>
+          <option value="+971">+971</option><option value="+977">+977</option><option value="+880">+880</option>
+        </select>
+        <input id="phone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="98765 43210">
+      </div>
+      <label class="check" for="consent"><input id="consent" type="checkbox">
+        <span>I confirm these details are correct and allow the lodge to keep them and my ID photos in its guest register.</span></label>
+    </div>
+
+    <p id="formMsg" class="msg" role="alert"></p>
+    <div class="actions">
+      <button id="backBtn" class="btn ghost" type="button">Back</button>
+      <button id="nextBtn" class="btn fill" type="button">Next</button>
+    </div>
+  </section>
+
+  <!-- 3. OTP -->
+  <section id="stepCode" class="step" hidden>
+    <h2>Verify your mobile</h2>
+    <p class="note" style="margin-top:0">Enter the 6-digit OTP sent to <strong id="sentTo" style="color:var(--gold-soft);font-weight:500"></strong></p>
+    <div class="otp" id="otpBoxes">
+      <input inputmode="numeric" maxlength="6" autocomplete="one-time-code" aria-label="OTP digit 1">
+      <input inputmode="numeric" maxlength="1" aria-label="OTP digit 2">
+      <input inputmode="numeric" maxlength="1" aria-label="OTP digit 3">
+      <input inputmode="numeric" maxlength="1" aria-label="OTP digit 4">
+      <input inputmode="numeric" maxlength="1" aria-label="OTP digit 5">
+      <input inputmode="numeric" maxlength="1" aria-label="OTP digit 6">
+    </div>
+    <p id="codeMsg" class="msg" role="alert"></p>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <button id="resendBtn" class="linkbtn" type="button" disabled>Resend OTP</button>
+      <button id="changeBtn" class="linkbtn" type="button">Edit details</button>
+    </div>
+    <div class="actions"><button id="verifyBtn" class="btn fill" type="button">Verify &amp; register</button></div>
+  </section>
+
+  <div id="recaptchaWrap"><div id="recaptcha"></div></div>
+
+  <!-- 4. Done -->
+  <section id="stepDone" class="step done" hidden>
+    <svg class="tick" viewBox="0 0 84 84" aria-hidden="true"><circle cx="42" cy="42" r="40"/><path d="M26 43l11 11 21-23"/></svg>
+    <h2>You are registered</h2>
+    <p class="note" style="margin-top:0">Please show this reference at the reception desk.</p>
+    <div class="ref" id="refNo"></div>
+    <div class="slip" id="slip"></div>
+    <div class="timerbox" id="timerBox" hidden>
+      <div class="tlabel" id="tLabel">Time remaining</div>
+      <div class="tclock" id="tClock">30:00</div>
+      <p class="note" id="tNote"></p>
+      <button id="alertBtn" class="linkbtn" type="button">Turn on alerts</button>
+    </div>
+    <div class="actions" style="width:100%"><button id="againBtn" class="btn ghost" type="button" style="flex:1">New registration</button></div>
+  </section>
+
+  <p class="foot">The Chennai Residency · Your details are kept private</p>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script>
+/* ================= CONFIG – edit these ================= */
+const CONFIG = {
+  // Must be the Web App URL ending in /exec (NOT the /library/ URL)
+  appsScriptUrl: "https://script.google.com/macros/s/AKfycbwzQhj5WlcrQ-0tCxn0h7F6HeZxSKt3eqIYyIEKxDSd14BrVjH8insBz0pDLhUEvqLAuw/exec",
+  firebase: {
+    apiKey: "AIzaSyA-Cn6-j_iZi7oN_yaaKjHsCG4-_JxHyiE",
+    authDomain: "qr-tcr.firebaseapp.com",
+    projectId: "qr-tcr",
+    appId: "1:893414484077:web:f197dc4219d821fb4fb764"
+  },
+  timer: { minutes: 10, graceMinutes: 05, repeatSeconds: 60, pollSeconds: 20, applyTo: ['Visitor'] }
+};
+/* ======================================================== */
+
+const $ = id => document.getElementById(id);
+const steps = ['stepType','stepForm','stepCode','stepDone'];
+let guestType = 'Guest', cur = 1;
+let confirmation = null, verifiedUser = null, verifier = null, resendTimer = null, busy = false;
+
+const fbLoaded = typeof firebase !== 'undefined';
+const configured = fbLoaded && !CONFIG.appsScriptUrl.startsWith('PASTE') && !CONFIG.firebase.apiKey.startsWith('PASTE');
+if (!fbLoaded){
+  $('setupBanner').textContent = 'The OTP service could not load. Open this page from its web link (not from a saved file or preview), check your internet, turn off any ad-blocker, then refresh.';
+  $('setupBanner').hidden = false;
+} else if (!configured) $('setupBanner').hidden = false;
+else firebase.initializeApp(CONFIG.firebase);
+const auth = configured ? firebase.auth() : null;
+if (auth) auth.useDeviceLanguage();
+
+function show(id){
+  steps.forEach(s => $(s).hidden = s !== id);
+  $('wrap').classList.toggle('compact', id !== 'stepType');
+  window.scrollTo({top:0});
+}
+function setBusy(btn, on, label){ busy = on; btn.disabled = on; if (label) btn.textContent = label; }
+function flash(el, text){ el.textContent = text; el.classList.remove('shake'); void el.offsetWidth; if (text) el.classList.add('shake'); }
+
+/* ---------- Room list ---------- */
+const ROOMS = {
+  'Floor 1': [
+    [101, 'Non-AC'],
+    [102, 'Non-AC'],
+    [103, 'Non-AC'],
+    [104, 'AC'],
+    [105, 'AC'],
+  ],
+
+  'Floor 2': [
+    [201, 'AC'],
+    [202, 'Non-AC'],
+    [203, 'Non-AC'],
+    [204, 'AC'],
+    [205, 'AC'],
+    [206, 'Non-AC'],
+    [207, 'Non-AC'],
+    [208, 'Non-AC'],
+    [209, 'AC'],
+  ],
+
+  'Floor 3': [
+    [301, 'AC'],
+    [302, 'Non-AC'],
+    [303, 'Non-AC'],
+    [304, 'AC'],
+    [305, 'AC'],
+    [306, 'Non-AC'],
+    [307, 'Non-AC'],
+    [308, 'Non-AC'],
+    [309, 'AC'],
+  ],
+
+  'Floor 4': [
+    [401, 'AC'],
+    [402, 'Non-AC'],
+    [403, 'Non-AC'],
+    [404, 'AC'],
+    [405, 'AC'],
+    [406, 'Non-AC'],
+    [407, 'Non-AC'],
+    [408, 'Non-AC'],
+    [409, 'AC'],
+    [410, 'Non-AC'],
+    [411, 'Non-AC'],
+  ],
+};
+function fillRooms(type, keep){
+  const sel = $('room');
+  if (!type){ sel.innerHTML = '<option value="">Select AC / Non-AC first</option>'; sel.disabled = true; return; }
+  const groups = Object.entries(ROOMS).map(([g, list]) => [g, list.filter(r => r[1] === type)]).filter(([, l]) => l.length);
+  sel.innerHTML = '<option value="">Select ' + type + ' room</option>' + groups.map(([g, l]) =>
+    '<optgroup label="' + g + '">' + l.map(([n]) => '<option value="' + n + '">' + n + '</option>').join('') + '</optgroup>').join('');
+  sel.disabled = false;
+  if (keep) sel.value = keep;
+}
+fillRooms('');
+$('roomType').onchange = () => fillRooms($('roomType').value);
+
+// Room from QR link: ?room=204  (also picks AC / Non-AC automatically)
+const qRoom = new URLSearchParams(location.search).get('room');
+if (qRoom){
+  const q = qRoom.slice(0,10);
+  const hit = Object.values(ROOMS).flat().find(r => String(r[0]) === q);
+  if (hit){ $('roomType').value = hit[1]; fillRooms(hit[1], q); }
+  $('roompill').textContent = 'Room ' + q; $('roompill').hidden = false;
+}
+$('checkout').min = new Date().toISOString().slice(0,10);
+
+/* ---------- 1. Guest or Visitor ---------- */
+function pick(t){ guestType = t; $('typeLabel').textContent = t + ' registration'; refreshForm(); show('stepForm'); goStep(1); }
+$('pickGuest').onclick = () => pick('Guest');
+$('pickVisitor').onclick = () => pick('Visitor');
+
+/* ---------- 2. Details wizard ---------- */
+const TITLES = ['About you','Address & ID','Your stay','Mobile & confirm'];
+function refreshForm(){
+  const visitor = guestType === 'Visitor', foreign = $('nationality').value !== 'Indian';
+  $('visitBox').hidden = !visitor; $('outBox').hidden = visitor; $('roomCol').hidden = visitor; $('acCol').hidden = visitor;
+  $('photoHint').textContent = visitor ? '(optional · front & back)' : '(required · front & back)';
+  $('photoNote').textContent = visitor ? 'Photos are optional for visitors. Please show the original ID at the reception desk.' : 'Please show the original ID at the reception desk.';
+  $('foreignBox').hidden = !foreign;
+  if (foreign) $('idType').value = 'Passport';
+}
+$('nationality').onchange = refreshForm;
+
+function goStep(n){
+  cur = n;
+  document.querySelectorAll('.pane').forEach(p => p.hidden = +p.dataset.pane !== n);
+  [...$('progress').children].forEach((b,i) => b.classList.toggle('on', i < n));
+  $('stepTitle').textContent = 'Step ' + n + ' of 4 · ' + TITLES[n-1];
+  $('nextBtn').textContent = n === 4 ? 'Get OTP' : 'Next';
+  flash($('formMsg'), '');
+  const first = document.querySelector('.pane[data-pane="' + n + '"] input:not([type=hidden]):not([type=file]), .pane[data-pane="' + n + '"] select');
+  if (first && window.innerWidth > 700) first.focus();
+}
+
+/* ---------- ID photos (optional) ---------- */
+const shots = {idFront:'', idBack:''};
+function compress(file, max = 1200, q = .7){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const s = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', q));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(); };
+    img.src = url;
+  });
+}
+document.querySelectorAll('.shotbtn').forEach(btn => {
+  const inp = $(btn.dataset.for);
+  btn.onclick = () => inp.click();
+  inp.onchange = async () => {
+    if (!inp.files[0]) return;
+    try{
+      const data = await compress(inp.files[0]);
+      shots[inp.id] = data;
+      const im = btn.querySelector('img'); im.src = data; im.hidden = false;
+      btn.querySelector('span').textContent = '✓ Retake';
+      flash($('formMsg'), '');
+    }catch(_){ flash($('formMsg'), 'Could not read that photo. Please try again, or skip it.'); }
+  };
+});
+
+function collect(){
+  const v = id => $(id).value.trim();
+  const visitor = guestType === 'Visitor', foreign = v('nationality') !== 'Indian';
+  return {
+    type:guestType, name:v('name'), gender:v('gender'), age:v('age'), email:v('email'),
+    address:v('address'), comingFrom:v('comingFrom'), purpose:v('purpose'),
+    nationality:v('nationality'), idType:v('idType'), idNo:v('idNo'),
+    idFront: shots.idFront, idBack: shots.idBack,   // empty string if a visitor skips the photo
+    passport: foreign ? v('passport') : '', visa: foreign ? v('visa') : '', visaExp: foreign ? v('visaExp') : '',
+    persons:v('persons'), roomType: visitor ? '' : v('roomType'), roomOrVisiting: visitor ? v('visiting') : v('room'),
+    checkout: visitor ? '' : v('checkout'), vehicle:v('vehicle').toUpperCase()
+  };
+}
+const checks = [
+  d => d.name.length < 2 ? 'Enter your full name.' : !d.gender ? 'Select gender.' : !(d.age >= 1 && d.age <= 120) ? 'Enter a valid age.'
+       : (d.nationality !== 'Indian' && (!d.passport || !d.visa || !d.visaExp)) ? 'Enter passport and visa details.' : '',
+  // ID proof and photos are mandatory for guests, photos are optional for visitors
+  d => d.address.length < 5 ? 'Enter your home address.' : !d.idType ? 'Select an ID proof.' : d.idNo.length < 4 ? 'Enter the ID number.'
+       : (d.type === 'Guest' && !d.idFront) ? 'Take a photo of the ID front side.' : (d.type === 'Guest' && !d.idBack) ? 'Take a photo of the ID back side.' : '',
+  d => !d.purpose ? 'Select the purpose of visit.' : !(d.persons >= 1) ? 'Enter the number of persons.'
+       : (d.type === 'Guest' && !d.roomType) ? 'Select AC or Non-AC.'
+       : !d.roomOrVisiting ? (d.type === 'Visitor' ? 'Enter whom you are meeting.' : 'Select your room.')
+       : (d.type === 'Guest' && !d.checkout) ? 'Select the expected check-out date.'
+       : (d.email && !/^\S+@\S+\.\S+$/.test(d.email)) ? 'Enter a valid email or leave it empty.' : '',
+  d => {
+    const cc = $('cc').value, num = $('phone').value.replace(/\D/g,'');
+    if (cc === '+91' ? !/^[6-9]\d{9}$/.test(num) : !/^\d{6,14}$/.test(num)) return 'Enter a valid mobile number.';
+    return $('consent').checked ? '' : 'Please tick the confirmation box.';
+  }
+];
+function validateAll(d){ for (let i = 0; i < 4; i++){ const e = checks[i](d); if (e) return {e, step:i+1}; } return null; }
+
+$('nextBtn').onclick = () => {
+  if (busy) return;
+  const e = checks[cur-1](collect());
+  if (e){ flash($('formMsg'), e); return; }
+  if (cur < 4) goStep(cur + 1); else getOtp();
+};
+$('backBtn').onclick = () => { if (cur > 1) goStep(cur - 1); else show('stepType'); };
+
+/* ---------- 3. Send OTP ---------- */
+function authError(e){
+  const m = {
+    'auth/invalid-phone-number':'This mobile number is not valid.',
+    'auth/too-many-requests':'Too many attempts. Please wait a few minutes and try again.',
+    'auth/quota-exceeded':'SMS limit reached for today. Please ask the reception desk to register you.',
+    'auth/captcha-check-failed':'Security check failed. Refresh the page and try again.',
+    'auth/invalid-verification-code':'That OTP is wrong. Check the SMS and try again.',
+    'auth/code-expired':'That OTP expired. Tap Resend OTP.',
+    'auth/network-request-failed':'No internet connection. Please check and try again.'
+  };
+  return m[e.code] || 'Something went wrong (' + (e.code || e.message) + '). Please try again.';
+}
+async function getOtp(){
+  const msgEl = $('stepCode').hidden ? $('formMsg') : $('codeMsg');
+  if (busy) return;
+  if (!configured){ flash(msgEl, fbLoaded ? 'Setup is not finished. Please inform the reception desk.' : 'OTP service not loaded. Refresh the page and check your internet.'); return; }
+  const bad = validateAll(collect());
+  if (bad){ show('stepForm'); goStep(bad.step); flash($('formMsg'), bad.e); return; }
+  flash(msgEl, '');
+  const cc = $('cc').value, num = $('phone').value.replace(/\D/g,'');
+  setBusy($('nextBtn'), true, 'Sending OTP…');
+  try{
+    if (verifier){ try{ verifier.clear(); }catch(_){} }
+    $('recaptchaWrap').innerHTML = '<div id="recaptcha"></div>';
+    verifier = new firebase.auth.RecaptchaVerifier('recaptcha', {size:'invisible'});
+    confirmation = await auth.signInWithPhoneNumber(cc + num, verifier);
+    verifiedUser = null;
+    $('sentTo').textContent = cc + ' ' + num;
+    clearBoxes(); flash($('codeMsg'), '');
+    $('verifyBtn').textContent = 'Verify & register';
+    show('stepCode'); boxes[0].focus(); startResendTimer();
+  }catch(e){ flash(msgEl, authError(e)); }
+  setBusy($('nextBtn'), false, cur === 4 ? 'Get OTP' : 'Next');
+}
+function startResendTimer(){
+  let s = 30; const b = $('resendBtn'); b.disabled = true; clearInterval(resendTimer);
+  b.textContent = 'Resend OTP in ' + s + 's';
+  resendTimer = setInterval(() => {
+    s--; if (s <= 0){ clearInterval(resendTimer); b.disabled = false; b.textContent = 'Resend OTP'; }
+    else b.textContent = 'Resend OTP in ' + s + 's';
+  }, 1000);
+}
+$('resendBtn').onclick = getOtp;
+$('changeBtn').onclick = () => { clearInterval(resendTimer); verifiedUser = null; if (auth) auth.signOut(); show('stepForm'); goStep(4); };
+
+/* ---------- OTP boxes ---------- */
+const boxes = [...document.querySelectorAll('#otpBoxes input')];
+const code = () => boxes.map(b => b.value).join('');
+function clearBoxes(){ boxes.forEach(b => { b.value = ''; b.classList.remove('filled'); }); }
+function spread(str, from){
+  const digits = str.replace(/\D/g,'').slice(0, 6 - from).split('');
+  digits.forEach((d,i) => { boxes[from + i].value = d; boxes[from + i].classList.add('filled'); });
+  const next = Math.min(from + digits.length, 5); boxes[next].focus();
+}
+boxes.forEach((b, i) => {
+  b.addEventListener('input', () => {
+    const val = b.value.replace(/\D/g,'');
+    b.value = '';
+    if (val.length > 1){ clearFrom(i); spread(val, i); }               // paste or SMS autofill
+    else if (val){ b.value = val; b.classList.add('filled'); if (i < 5) boxes[i+1].focus(); }
+    else b.classList.remove('filled');
+    if (code().length === 6) verifyOtp();
+  });
+  b.addEventListener('keydown', e => {
+    if (e.key === 'Backspace' && !b.value && i > 0){ boxes[i-1].value = ''; boxes[i-1].classList.remove('filled'); boxes[i-1].focus(); }
+    if (e.key === 'Enter') verifyOtp();
+  });
+  b.addEventListener('focus', () => b.select());
+});
+function clearFrom(i){ for (let k = i; k < 6; k++){ boxes[k].value = ''; boxes[k].classList.remove('filled'); } }
+
+/* ---------- 4. Verify OTP, then save to the sheet ---------- */
+async function verifyOtp(){
+  if (busy) return;
+  setBusy($('verifyBtn'), true, 'Checking…'); flash($('codeMsg'), '');
+  try{
+    if (!verifiedUser){
+      if (!/^\d{6}$/.test(code())) throw {message:'Enter the 6-digit OTP.'};
+      verifiedUser = (await confirmation.confirm(code())).user;
+    }
+    await save();
+  }catch(e){
+    flash($('codeMsg'), e.code ? authError(e) : (e.message === 'Failed to fetch' ? 'No internet connection. Tap the button to try again.' : e.message));
+    if (e.code === 'auth/invalid-verification-code'){ clearBoxes(); boxes[0].focus(); }
+  }
+  setBusy($('verifyBtn'), false, verifiedUser ? 'Save again' : 'Verify & register');
+}
+async function save(){
+  const d = collect();
+  d.idToken = await verifiedUser.getIdToken(true);
+  // text/plain avoids a CORS preflight; Apps Script reads the JSON from the body
+  const r = await fetch(CONFIG.appsScriptUrl, {method:'POST', body: JSON.stringify(d)});
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'Could not save.');
+  const rows = [['Name', d.name], ['Mobile', verifiedUser.phoneNumber], [d.type === 'Visitor' ? 'Meeting' : 'Room', d.roomOrVisiting], ['Registered', j.time]];
+  renderDone(j.ref, rows);
+  startTimer(d.type, j.ref, rows);
+  auth.signOut();
+}
+$('verifyBtn').onclick = verifyOtp;
+
+function renderDone(ref, rows){
+  $('refNo').textContent = ref;
+  $('slip').innerHTML = rows.map(() => '<div><span></span><strong></strong></div>').join('');
+  [...$('slip').children].forEach((el,i) => { el.children[0].textContent = rows[i][0]; el.children[1].textContent = rows[i][1]; });
+  show('stepDone');
+}
+
+/* ---------- Time limit, grace period, admin stop ---------- */
+const TKEY = 'tcr_timer', T = CONFIG.timer;
+const GRACE_MSG = 'Your visit time and grace time are over. Charges apply. Kindly meet the reception desk. Thank you.';
+const ADMIN_MSG = 'Your visit was closed by the reception desk. Kindly meet the reception desk. Thank you.';
+let tTick = null, tPoll = null, lastAlertN = -1, audioCtx = null, timerDone = false;
+const pad = n => String(n).padStart(2,'0');
+const mmss = ms => pad(Math.floor(ms/60000)) + ':' + pad(Math.floor(ms/1000) % 60);
+function beep(){
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.frequency.value = 880; g.gain.value = .15; o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + .4);
+  }catch(_){}
+}
+function notifyTimeout(minsOver){
+  const left = Math.max(0, T.graceMinutes - minsOver);
+  const message = minsOver === 0
+    ? 'Your ' + T.minutes + ' minutes are over. Grace time: ' + T.graceMinutes + ' min. Kindly meet the reception desk.'
+    : 'Reminder: grace time ends in about ' + left + ' min. Kindly meet the reception desk. Thank you.';
+  $('tNote').textContent = message;
+  beep();
+  if (navigator.vibrate) navigator.vibrate([300,150,300]);
+  if ('Notification' in window && Notification.permission === 'granted'){
+    try{ new Notification('The Chennai Residency', {body:message}); }catch(_){}
+  }
+}
+function endTimer(msg){
+  timerDone = true; clearInterval(tTick); clearInterval(tPoll);
+  $('timerBox').hidden = false; $('timerBox').classList.add('over');
+  $('tLabel').textContent = 'Visit ended'; $('tClock').textContent = '00:00';
+  $('tNote').textContent = msg;
+  $('alertBtn').hidden = true;
+  $('againBtn').hidden = false;   // allow a new registration after the visit ends
+  try{
+    const sv = JSON.parse(localStorage.getItem(TKEY) || 'null');
+    if (sv){ sv.ended = true; sv.endMsg = msg; localStorage.setItem(TKEY, JSON.stringify(sv)); }
+  }catch(_){}
+}
+function runTimer(end, ref){
+  clearInterval(tTick); clearInterval(tPoll); lastAlertN = -1; timerDone = false;
+  $('againBtn').hidden = true;   // no re-registering while a visitor timer is running
+  $('timerBox').hidden = false;
+  $('alertBtn').hidden = !('Notification' in window) || Notification.permission !== 'default';
+  const graceEnd = end + T.graceMinutes * 60000;
+  const tick = () => {
+    if (timerDone) return;
+    const now = Date.now(), left = end - now;
+    if (left > 0){
+      $('timerBox').classList.remove('over');
+      $('tLabel').textContent = 'Time remaining';
+      $('tClock').textContent = mmss(left);
+      $('tNote').textContent = 'You may stay for ' + T.minutes + ' minutes. We will remind you when the time is over.';
+    } else if (now < graceEnd){
+      $('timerBox').classList.add('over');
+      $('tLabel').textContent = 'Grace time - over by';
+      $('tClock').textContent = mmss(-left);
+      const n = Math.floor(-left / (T.repeatSeconds * 1000));
+      if (n !== lastAlertN){ lastAlertN = n; notifyTimeout(n); }
+    } else {
+      endTimer(GRACE_MSG);
+      beep(); if (navigator.vibrate) navigator.vibrate([500,200,500]);
+    }
+  };
+  const poll = async () => {
+    if (timerDone || !ref) return;
+    try{
+      const r = await fetch(CONFIG.appsScriptUrl + '?action=status&ref=' + encodeURIComponent(ref));
+      const j = await r.json();
+      if (j.ok && j.status === 'Stopped' && (!j.ref || j.ref === ref)) endTimer(ADMIN_MSG);
+    }catch(_){}
+  };
+  tick();
+  if (timerDone) return;
+  tTick = setInterval(tick, 1000);
+  poll(); tPoll = setInterval(poll, T.pollSeconds * 1000);
+}
+function startTimer(type, ref, rows){
+  if (!T || !T.applyTo.includes(type)) return;
+  const end = Date.now() + T.minutes * 60000;
+  try{ localStorage.setItem(TKEY, JSON.stringify({end, ref, rows})); }catch(_){}
+  runTimer(end, ref);
+}
+$('alertBtn').onclick = async () => {
+  if (!('Notification' in window)) return;
+  try{
+    const permission = await Notification.requestPermission();
+    $('alertBtn').hidden = permission !== 'default';
+  }catch(_){}
+};
+$('againBtn').onclick = () => { try{ localStorage.removeItem(TKEY); }catch(_){} location.reload(); };
+try{
+  const saved = JSON.parse(localStorage.getItem(TKEY) || 'null');
+  if (saved && Date.now() - saved.end < 6*3600*1000){
+    renderDone(saved.ref, saved.rows);
+    if (saved.ended) endTimer(saved.endMsg || GRACE_MSG); else runTimer(saved.end, saved.ref);
+  } else localStorage.removeItem(TKEY);
+}catch(_){}
+</script>
+</body>
+</html>
